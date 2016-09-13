@@ -1,0 +1,266 @@
+'use strict';
+
+// YOU KNOW WHAT TO DO //
+
+/**
+ * each: Designed to loop over a collection, Array or Object, and applies the action 
+ * Function to each value in the collection.
+ * 
+ * @param {Array or Object} collection The collection over which to iterate.
+ * @param {Function} action The Function to be applied to each value in the 
+ * collection
+ */
+function each(collection, action) {
+    if(Array.isArray(collection)) {
+        for(var i = 0; i < collection.length; i++) {
+            action(collection[i], i, collection);
+        }
+    } else {
+        for (var key in collection) {
+            action(collection[key], key, collection);
+        }
+    }
+}
+
+/**
+identity: Designed to return the same value that is used as the argument.
+
+@param {value} value to be both to be passed and returned when the function 
+is called. This will be the result of the function when is called.
+*/
+function identity(value){
+    return value;
+}
+
+/**
+ * typeOf: This accept one parameter, a value, and return (as a string)
+ * which type of Javascript component the value is. For example, if a a array
+ * is passed, it will return 'array'. This is to supplement the native
+ * function 'typeof' which does not disnguish between and array or object. The 
+ * function 'typeof' also does not specifically identify null values or Dates as
+ * such. 
+ * 
+ * @param {value} is the value to be evaluated and it's type identified
+*/
+function typeOf(value){
+    if(value === null) return 'null';
+    if(value instanceof Date) return 'Date';
+    if(Array.isArray(value)) return 'array';
+    return typeof(value);
+}
+
+/** 
+ * first: Returns the first element of an array OR the first n elements of the 
+ * array. Takes two parameter: 'array' and 'n' and if no number(n) returns the 
+ * first 'n' number of elements in the array. 
+ * 
+ * If no 'n' is provided, it will return the first number. This will return an 
+ * empty list if numerical argument is not a positive number. This function is 
+ * the reverse of the function 'last'
+ * 
+ * @param {array} is the array from which a number or set of numbers will be 
+ * pulled from
+ * @param {n} is the amount of numbers to extract from the array, starting at the 
+ * FIRST elements
+*/
+
+function first(array, n) {
+    if(!Array.isArray(array) || n < 0 ) return[];
+    if(n === undefined || typeof n !== 'number' || n === 1) return array[0];
+    return array.slice(0, n);
+};
+
+
+/** 
+ * last: Returns the last element of an array OR the last n elements of the 
+ * array. Takes two parameter: 'array' and 'n' and if no number(n) returns the 
+ * last 'n' number of elements in the array. 
+ * 
+ * If no 'n' is provided, it will return the last number. This will return an 
+ * empty list if numerical argument is not a positive number. This function is 
+ * the reverse of the function 'first'
+ * 
+ * @param {array} is the array from which a number or set of numbers will be 
+ * pulled from
+ * @param {n} is the amount of numbers to extract from the array, starting at the 
+ * LAST elements
+*/
+_.last = function(array, n){
+    if(!Array.isArray(array) || n < 0) return [];
+    if(n === undefined || typeof n !== 'number' || n === 1) return array[array.length -1];
+    if(n > array.length) return array
+    return array.slice(array.length - n);
+};
+
+
+/**
+ * 
+ */
+_.each = function(collection, action) {
+    if(Array.isArray(collection)){
+        for(var i = 0; i < collection.length; i++) {
+            action(collection[i], i, collection);
+        }
+    }else {
+        for(var key in collection) {
+            action(collection[key],  key, collection);
+        }
+    }
+};
+
+///////////////////
+_.indexOf = function (array, value) {
+    for(var i = 0; i < array.length; i++) {
+        if (array[i] === value) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+///////////////////
+_.filter = function(array, test) {
+    var output = [];
+    for(var i = 0; i < array.length; i++){
+        if(test(array[i], i, array)) {
+            output.push(array[i])
+        }
+    }
+    return output;
+};
+
+///////////////////
+_.reject = function(array, test) {
+    var output = [];
+    for(var i = 0; i < array.length; i++){
+        if(test(array[i], i, array) === false) {
+            output.push(array[i]);
+        }
+    }
+    return output;
+};
+
+///////////////////
+_.partition = function(array, test) {
+    var output = [];
+    output.push(_.filter(array, test));
+    output.push(_.reject(array, test));
+    return output;
+};
+
+///////////////////
+/////below works but uses 'filter' instead of _.filter
+_.unique = function(array) {
+    var output = array.filter(function(elem, index, self) {
+        return index == self.indexOf(elem)
+    });
+    return output
+};
+
+///////////////////
+_.map = function(array, transform){
+    const transformed = [];
+    _.each(array, function(value, i, array) // note this <array> is different {
+        transformed.push(transform(value, i, array));
+    });
+    return transformed;
+};
+
+///////////////////
+_.pluck = function(array, prop) {
+    
+};
+
+///////////////////
+_.contains = function(array, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === value) {
+            return true;
+        }
+    }
+    return false;
+};
+
+///////////////////
+_.every = function(collection, test) {
+    if(!test) {
+        for(var i = 0; i < collection.length; i++) {
+            if(collection[i] === true){
+                return true
+            }
+        }
+        return false;
+    }
+    if(Array.isArray(collection)){
+        for(var i = 0; i < collection.length; i++) {
+            if(test(collection[i], i, collection) === false){
+                return false;
+            }
+        }
+    } else {
+        for(var key in collection) {
+          if(test(collection[key],  key, collection) === false) {
+              return false;
+          }
+        }
+    }
+    return true;
+};
+
+///////////////////
+_.some = function(collection, test) {
+    if(!test) {
+        for(var i = 0; i < collection.length; i++) {
+            if(collection[i] === true){
+                return true
+            }
+        }
+        return false;
+    }
+    if(Array.isArray(collection)){
+        for(var i = 0; i < collection.length; i++) {
+            if(test(collection[i], i, collection) === true){
+                return true;
+            }
+        }
+    } else {
+        for(var key in collection) {
+          if(test(collection[key],  key, collection) === true) {
+              return true;
+          }
+        }
+    }
+    return false;
+};
+
+///////////////////
+_.reduce = function(arr, test, seed) {
+    if (seed === undefined) {
+           seed = arr[0];
+        for (var i = 1; i < arr.length; i++) {
+           test(seed, arr[i], i);
+           seed = test(seed, arr[i], i);
+       }
+       return seed;
+    }
+
+    for(var i = 0; i < arr.length; i++) {
+        test(seed, i, arr[i]); 
+        seed = test(seed, i, arr[i]); 
+    }
+    return seed;
+};
+
+///////////////////
+_.extend = function(){ // REFERENCE README Document
+    for(var i = 1; i < arguments.length; i++)
+        for(var key in arguments[i])
+            if(arguments[i].hasOwnProperty(key))
+                arguments[0][key] = arguments[i][key];
+        return arguments[0];
+        
+};
+*/      
+
+
+module.exports.each = each;
