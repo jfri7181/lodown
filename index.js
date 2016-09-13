@@ -405,12 +405,19 @@ module.exports.reduce = reduce;
  * @param {... objectN} represents the variable number of objects that can be passed
  * @return {object1} returns the 'copy to' object with its new values
  */
-function extend (object1, ... objectN){ // REFERENCE README Document
-    for(var i = 0; i < objectN.length; i++) {
-        for(var key in objectN[i])
-            object1[key] = objectN[i][key];
-    }
-        return object1;
+function extend (copyTo) {
+   const copyFromObjects = Array.prototype.slice.call(arguments, 1);
+   
+   // 1. loop over array of copyFromObjects //
+   // 2. each copyFrom is an object, so loop of the object, 
+   // 3. use array syntax to add to the copyTo object, the key/value pairs from the copyFrom
+   for(let i = 0; i < copyFromObjects.length; i++) {
+       let copyFromObject = copyFromObjects[i];
+       for(let key in copyFromObject) {
+           copyTo[key] = copyFromObject[key];
+       }
+   }
+   return copyTo;   
 };
 
 module.exports.extend = extend;
